@@ -1,0 +1,41 @@
+# Dependencies
+node_modules
+.venv
+venv
+__pycache__
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist
+build
+*.pyc
+
+# IDE
+.vscode/settings.json
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Kaggle cache (if used)
+.cache/
+
+# Dataset
+backend/data/
+
+# Data files (large files - not tracked)
+*.pkl
+# *.csv
+# *.xlsx
+
+# ML model files (too large for GitHub - use cloud storage)
+backend/efficiency_loss_model.pkl
