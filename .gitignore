@@ -31,6 +31,7 @@ npm-debug.log*
 
 # Dataset
 backend/data/
+data/
 
 # Data files (large files - not tracked)
 *.pkl
