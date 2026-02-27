@@ -39,3 +39,7 @@ backend/data/
 
 # ML model files (too large for GitHub - use cloud storage)
 backend/efficiency_loss_model.pkl
+
+# Checkpoints
+backend/checkpoints/
+*.pth
