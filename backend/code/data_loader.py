@@ -33,7 +33,6 @@ val_loader = DataLoader(
     batch_size=BATCH_SIZE,
     shuffle=False,
     num_workers=2,
-    pin_memory=False
 )
 
 test_loader = DataLoader(
@@ -41,9 +40,8 @@ test_loader = DataLoader(
     batch_size=BATCH_SIZE,
     shuffle=False,
     num_workers=2,
-    pin_memory=False
 )
-#What does num_workers do? and pin_memory?
+#num_workers controls how many parallel processes load your data so training doesn't have to wait.
 
 def main():
     images, labels = next(iter(train_loader))
@@ -51,5 +49,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+#if __name__ == "__main__": ensures main() runs only when the file is executed directly, not when imported.
 
 #Finished here for now

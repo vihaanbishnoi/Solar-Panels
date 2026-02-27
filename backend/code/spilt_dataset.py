@@ -8,7 +8,7 @@ so I can control data structure and reproducibility. (Didn't understand) (Not pr
 '''Notes about the dataset: Give in the word file'''
 
 from PIL import Image
-#What is PIL? (Python Imaging Library)
+
 import os
 
 root = "backend/data/raw"
@@ -31,7 +31,6 @@ for cls in os.listdir(root):
 
 #Deleted new images in bird-drop
 
-#Step 2 would be splitting the dataset into training, validation, and test sets, and then applying data augmentation techniques to increase the diversity of the training data. After that, we can proceed with building and training a machine learning model for image classification.
 
 import os
 import shutil
@@ -53,8 +52,6 @@ for cls in os.listdir(RAW_DIR):
     cls_path = os.path.join(RAW_DIR, cls)
 
     # Skip anything that is not a folder 
-
-    #What is a defitinition of a folder here? (Not priority for now)
     if not os.path.isdir(cls_path):
         continue
 
@@ -81,4 +78,3 @@ for cls in os.listdir(RAW_DIR):
 
 print("Dataset split completed.")
 
-#Understand last loop for later
