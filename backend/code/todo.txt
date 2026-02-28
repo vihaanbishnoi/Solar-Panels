@@ -1,0 +1,40 @@
+What is LEFT (in order of importance)
+1️⃣ Explainability (Grad-CAM) ⭐
+Show where the model looks on panels
+
+Proves the model focuses on defects
+
+Big boost for interviews & reports
+
+2️⃣ Optional fine-tuning
+Unfreeze last ResNet block
+
+Train with lower learning rate
+
+Improves subtle defect classes
+
+3️⃣ Error analysis
+Identify which classes are confused
+
+Explain why (dust vs bird-drop, etc.)
+
+Shows real ML thinking
+
+4️⃣ Documentation
+README:
+
+Problem
+
+Dataset
+
+Model
+
+Results
+
+Save sample predictions
+
+5️⃣ Optional demo
+Simple inference script
+
+Or notebook showing predictions
+
