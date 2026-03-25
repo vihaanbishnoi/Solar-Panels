@@ -1,0 +1,4 @@
+actual_col: generation_kw
+pred_col: pred_generation_kw
+residual_sigma: 3.0
+output_file: backend/artifacts/timeseries/forecasts/fault_flags.csv

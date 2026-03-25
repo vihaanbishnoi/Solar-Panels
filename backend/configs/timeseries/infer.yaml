@@ -1,0 +1,3 @@
+model_artifact: backend/artifacts/timeseries/checkpoints/baseline_model.json
+feature_file: backend/data/timeseries/features/features.csv
+forecast_file: backend/artifacts/timeseries/forecasts/forecast.csv

@@ -1,0 +1,7 @@
+seed: 42
+batch_size: 32
+epochs: 10
+learning_rate: 0.001
+image_size: 224
+checkpoint_path: backend/artifacts/vision/checkpoints/best_model.pth
+data_dir: backend/data/vision/processed

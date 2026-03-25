@@ -1,0 +1,2 @@
+checkpoint_path: backend/artifacts/vision/checkpoints/best_model.pth
+image_path: backend/data/vision/processed/test/Bird-drop/Bird (3).jpg
