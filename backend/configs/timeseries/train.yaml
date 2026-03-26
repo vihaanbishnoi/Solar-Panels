@@ -1,5 +1,0 @@
-site_col: site_id
-timestamp_col: timestamp
-target_col: generation_kw
-resample_rule: 15min
-lags: [1, 2, 4, 96]
