@@ -43,3 +43,6 @@ backend/efficiency_loss_model.pkl
 # Checkpoints
 backend/checkpoints/
 *.pth
+
+# Ignore only checkpoint files (recommended)
+.ipynb_checkpoints/
