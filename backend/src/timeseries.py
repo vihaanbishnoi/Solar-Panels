@@ -180,6 +180,7 @@ def train_energy_model(
     test_size: float = DEFAULT_TEST_SIZE,
     random_state: int = 42,
     n_estimators: int = 100,
+    n_jobs: int = 1,
 ) -> ForecastArtifacts:
     """Train the random forest regressor and evaluate it on the holdout set."""
     train_frame, test_frame = split_feature_frame(data, test_size=test_size)
@@ -187,7 +188,7 @@ def train_energy_model(
     model = RandomForestRegressor(
         n_estimators=n_estimators,
         random_state=random_state,
-        n_jobs=-1,
+        n_jobs=n_jobs,
     )
     model.fit(train_frame[FEATURE_COLUMNS], train_frame[TARGET_COLUMN])
 
