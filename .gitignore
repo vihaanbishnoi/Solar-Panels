@@ -46,3 +46,7 @@ backend/checkpoints/
 
 # Ignore only checkpoint files (recommended)
 .ipynb_checkpoints/
+
+# Notebooks
+backend/notebooks/
+*.ipynb
