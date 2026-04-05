@@ -50,3 +50,6 @@ backend/checkpoints/
 # Notebooks
 #backend/notebooks/
 #*.ipynb
+
+backend/artifacts/
+*.joblib
