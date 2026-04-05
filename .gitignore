@@ -48,5 +48,5 @@ backend/checkpoints/
 .ipynb_checkpoints/
 
 # Notebooks
-backend/notebooks/
-*.ipynb
+#backend/notebooks/
+#*.ipynb
