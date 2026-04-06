@@ -5,10 +5,10 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 
-from backend.src import augmentation as tr
+from backend.vision import augmentation as tr
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-DATA_DIR = BASE_DIR / "data" / "clean"
+DATA_DIR = BASE_DIR / "data" / "vision" / "processed"
 
 train_dataset = ImageFolder(
     root=str(DATA_DIR / "train"),

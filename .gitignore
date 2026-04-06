@@ -2,7 +2,7 @@
 node_modules
 .venv
 venv
-__pycache__
+__pycache__/
 
 # Environment
 .env
@@ -13,6 +13,12 @@ __pycache__
 dist
 build
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
 
 # IDE
 .vscode/settings.json
@@ -48,8 +54,7 @@ backend/checkpoints/
 .ipynb_checkpoints/
 
 # Notebooks
-#backend/notebooks/
-#*.ipynb
+*.ipynb
 
 backend/artifacts/
 *.joblib

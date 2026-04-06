@@ -6,9 +6,9 @@ from pathlib import Path
 import torch
 from PIL import Image
 
-from backend.src.augmentation import val_test_transforms
-from backend.src.data_loader import test_dataset
-from backend.src.model import model
+from backend.vision.augmentation import val_test_transforms
+from backend.vision.data_loader import test_dataset
+from backend.vision.model import model
 
 
 def main():
@@ -19,7 +19,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     base_dir = Path(__file__).resolve().parents[1]
-    checkpoint_path = base_dir / "checkpoints" / "best_model.pth"
+    checkpoint_path = base_dir / "artifacts" / "vision" / "checkpoints" / "best_model.pth"
 
     if checkpoint_path.exists():
         state_dict = torch.load(checkpoint_path, map_location=device)

@@ -5,7 +5,11 @@ from pathlib import Path
 
 import pandas as pd
 
-from backend.src.timeseries import FEATURE_COLUMNS, forecast_from_frame, load_energy_model
+from backend.timeseries.pipeline import (
+    FEATURE_COLUMNS,
+    forecast_from_frame,
+    load_energy_model,
+)
 
 
 def main():

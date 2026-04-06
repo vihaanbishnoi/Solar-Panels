@@ -1,9 +1,9 @@
 """Train the energy forecasting model from time-series data."""
 
-from backend.src.timeseries import (
+from backend.timeseries.pipeline import (
     FORECASTS_DIR,
-    load_raw_data,
     build_feature_frame,
+    load_raw_data,
     save_energy_model,
     save_forecast_frame,
     save_metrics,

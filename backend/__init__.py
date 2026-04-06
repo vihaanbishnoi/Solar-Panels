@@ -1,1 +1,1 @@
-﻿"""Backend package for solar panel fault detection."""
+"""Backend package for solar panel fault detection."""

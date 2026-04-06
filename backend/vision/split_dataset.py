@@ -8,8 +8,8 @@ from pathlib import Path
 random.seed(42)
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-RAW_DIR = BASE_DIR / "data" / "raw"
-OUTPUT_DIR = BASE_DIR / "data" / "clean"
+RAW_DIR = BASE_DIR / "data" / "vision" / "raw"
+OUTPUT_DIR = BASE_DIR / "data" / "vision" / "processed"
 
 SPLIT_RATIOS = {
     "train": 0.7,

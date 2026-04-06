@@ -7,8 +7,8 @@ import torch.nn as nn
 import torch.optim as optim
 from tqdm import tqdm
 
-from backend.src.data_loader import train_loader, val_loader
-from backend.src.model import model
+from backend.vision.data_loader import train_loader, val_loader
+from backend.vision.model import model
 
 
 def train_one_epoch(net, dataloader, optimizer, criterion, device):
@@ -70,7 +70,7 @@ def main():
     best_val_loss = float("inf")
 
     base_dir = Path(__file__).resolve().parents[1]
-    checkpoint_dir = base_dir / "checkpoints"
+    checkpoint_dir = base_dir / "artifacts" / "vision" / "checkpoints"
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
     for epoch in range(epochs):
