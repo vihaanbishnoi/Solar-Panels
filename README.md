@@ -34,6 +34,8 @@ The time-series module converts the Jupyter notebook workflow into reusable Pyth
   Runs the full forecasting pipeline
 - `backend/timeseries/predict.py`
   Loads a trained model and generates predictions from prepared feature data
+- `backend/timeseries/predict_one_day_input.py`
+  Takes interactive user input for one row (one day/time point) and predicts output
 
 ### Vision
 
@@ -61,6 +63,12 @@ From the project root:
 
 ```powershell
 .\venv\Scripts\python.exe -m backend.timeseries.predict backend\artifacts\timeseries\forecasts\energy_forecast_test_predictions.csv
+```
+
+### Time-Series One-Row User Input Prediction
+
+```powershell
+.\venv\Scripts\python.exe -m backend.timeseries.predict_one_day_input
 ```
 
 ### Vision Dataset Split

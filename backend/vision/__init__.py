@@ -1,1 +1,0 @@
-"""Vision fault-classification package."""
