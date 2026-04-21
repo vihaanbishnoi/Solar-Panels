@@ -58,3 +58,6 @@ backend/checkpoints/
 
 backend/artifacts/
 *.joblib
+
+todo/
+Computer Vision Notes/
