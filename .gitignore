@@ -1,7 +1,7 @@
 # Dependencies
-node_modules
-.venv
-venv
+node_modules/
+.venv/
+venv/
 __pycache__/
 
 # Environment
@@ -10,8 +10,8 @@ __pycache__/
 .env.*.local
 
 # Build outputs
-dist
-build
+dist/
+build/
 *.pyc
 *.pyo
 *.pyd
@@ -21,8 +21,8 @@ build
 htmlcov/
 
 # IDE
-.vscode/settings.json
-.idea
+.vscode/
+.idea/
 
 # OS
 .DS_Store
@@ -32,32 +32,29 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Kaggle cache (if used)
-.cache/
+# Cache
+backend/.cache/
 
 # Dataset
 backend/data/
 
-# Data files (large files - not tracked)
+# Large data files
 *.pkl
 # *.csv
 # *.xlsx
 
-# ML model files (too large for GitHub - use cloud storage)
-backend/efficiency_loss_model.pkl
-
-# Checkpoints
+# Model checkpoints
 backend/checkpoints/
 *.pth
-
-# Ignore only checkpoint files (recommended)
-.ipynb_checkpoints/
-
-# Notebooks
-*.ipynb
-
-backend/artifacts/
 *.joblib
 
-todo/
-Computer Vision Notes/
+# Artifacts
+backend/artifacts/
+backend/notebooks/
+# Jupyter
+.ipynb_checkpoints/
+# *.ipynb   ← keep notebooks visible
+
+# Local folders
+todo
+Computer Vision Notes

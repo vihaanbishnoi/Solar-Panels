@@ -1,132 +1,93 @@
-"""Prepare train/val/test image folders from the raw vision dataset."""
-
-from __future__ import annotations
-
-import argparse
-import random
+import os
 import shutil
-from pathlib import Path
+import random
 
-IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+SOURCE_DIR  = "backend\\data\\vision\\raw"  
+OUTPUT_DIR  = "backend\\data\\vision\\dataset"           
+VAL_SPLIT   = 0.2                    
+RANDOM_SEED = 42                      
 
-VISION_DIR = Path(__file__).resolve().parent
-BACKEND_DIR = VISION_DIR.parent
-DATA_DIR = BACKEND_DIR / "data" / "vision"
+def split_dataset():
+    random.seed(RANDOM_SEED)
 
-RAW_DATA_DIR = DATA_DIR / "raw"
-SPLIT_DATA_DIR = DATA_DIR / "split"
-TRAIN_DATA_DIR = SPLIT_DATA_DIR / "train"
-VAL_DATA_DIR = SPLIT_DATA_DIR / "val"
-TEST_DATA_DIR = SPLIT_DATA_DIR / "test"
+    train_dir = os.path.join(OUTPUT_DIR, "train")
+    val_dir   = os.path.join(OUTPUT_DIR, "val")
 
+    # Check source exists
+    if not os.path.exists(SOURCE_DIR):
+        raise FileNotFoundError(f"Source folder not found: {SOURCE_DIR}")
 
-def _clear_and_create(path: Path) -> None:
-    if path.exists():
-        shutil.rmtree(path)
-    path.mkdir(parents=True, exist_ok=True)
+    # Check output doesn't already exist (prevent accidental re-run)
+    if os.path.exists(OUTPUT_DIR):
+        print(f"WARNING: '{OUTPUT_DIR}' already exists.")
+        answer = input("Do you want to delete it and re-split? (yes/no): ").strip().lower()
+        if answer != "yes":
+            print("Aborted. Your existing split is unchanged.")
+            return
+        shutil.rmtree(OUTPUT_DIR)
+        print(f"Deleted existing '{OUTPUT_DIR}'.")
 
+    class_names = [
+        d for d in os.listdir(SOURCE_DIR)
+        if os.path.isdir(os.path.join(SOURCE_DIR, d))
+    ]
 
-def _copy_split(
-    files: list[Path],
-    class_name: str,
-    destination_root: Path,
-) -> int:
-    target_dir = destination_root / class_name
-    target_dir.mkdir(parents=True, exist_ok=True)
-    for src in files:
-        shutil.copy2(src, target_dir / src.name)
-    return len(files)
+    if not class_names:
+        raise ValueError(f"No subfolders found in {SOURCE_DIR}")
 
+    print(f"\nFound {len(class_names)} classes: {class_names}\n")
 
-def split_dataset(
-    raw_dir: Path,
-    train_dir: Path,
-    val_dir: Path,
-    test_dir: Path,
-    train_ratio: float,
-    val_ratio: float,
-    seed: int,
-) -> dict[str, int]:
-    if not raw_dir.exists():
-        raise FileNotFoundError(f"Raw dataset directory not found: {raw_dir}")
+    total_train = 0
+    total_val   = 0
 
-    _clear_and_create(train_dir)
-    _clear_and_create(val_dir)
-    _clear_and_create(test_dir)
+    for class_name in sorted(class_names):
+        class_path = os.path.join(SOURCE_DIR, class_name)
 
-    rng = random.Random(seed)
-    stats = {"train": 0, "val": 0, "test": 0}
-
-    class_dirs = [p for p in raw_dir.iterdir() if p.is_dir()]
-    if not class_dirs:
-        raise ValueError(f"No class folders found in: {raw_dir}")
-
-    for class_dir in sorted(class_dirs):
+        # Get all image files
         images = [
-            p for p in class_dir.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS
+            f for f in os.listdir(class_path)
+            if f.lower().endswith((".jpg", ".jpeg", ".png", ".bmp", ".webp"))
         ]
+
         if not images:
+            print(f"  SKIPPING {class_name} — no images found")
             continue
 
-        rng.shuffle(images)
-        total = len(images)
-        train_count = int(total * train_ratio)
-        val_count = int(total * val_ratio)
-        test_count = total - train_count - val_count
+        random.shuffle(images)
 
-        train_files = images[:train_count]
-        val_files = images[train_count : train_count + val_count]
-        test_files = images[train_count + val_count : train_count + val_count + test_count]
+        split_idx  = max(1, int((1 - VAL_SPLIT) * len(images)))
+        train_imgs = images[:split_idx]
+        val_imgs   = images[split_idx:]
 
-        stats["train"] += _copy_split(train_files, class_dir.name, train_dir)
-        stats["val"] += _copy_split(val_files, class_dir.name, val_dir)
-        stats["test"] += _copy_split(test_files, class_dir.name, test_dir)
+        # Create output folders
+        os.makedirs(os.path.join(train_dir, class_name), exist_ok=True)
+        os.makedirs(os.path.join(val_dir,   class_name), exist_ok=True)
 
-    return stats
+        # Copy images
+        for img in train_imgs:
+            shutil.copy(
+                os.path.join(class_path, img),
+                os.path.join(train_dir, class_name, img)
+            )
+        for img in val_imgs:
+            shutil.copy(
+                os.path.join(class_path, img),
+                os.path.join(val_dir, class_name, img)
+            )
 
+        total_train += len(train_imgs)
+        total_val   += len(val_imgs)
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Split raw vision dataset into train/val/test.")
-    parser.add_argument("--raw-dir", type=Path, default=RAW_DATA_DIR, help="Path to raw class folders.")
-    parser.add_argument(
-        "--split-root",
-        type=Path,
-        default=SPLIT_DATA_DIR,
-        help="Root output folder for train/val/test splits.",
-    )
-    parser.add_argument("--train-ratio", type=float, default=0.7, help="Train split ratio.")
-    parser.add_argument("--val-ratio", type=float, default=0.15, help="Validation split ratio.")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducible splits.")
-    return parser.parse_args()
+        print(f"  {class_name:25s}  train={len(train_imgs):4d}  val={len(val_imgs):4d}")
 
-
-def main() -> None:
-    args = parse_args()
-    train_dir = args.split_root / "train"
-    val_dir = args.split_root / "val"
-    test_dir = args.split_root / "test"
-
-    total_ratio = args.train_ratio + args.val_ratio
-    if total_ratio >= 1.0:
-        raise ValueError("train-ratio + val-ratio must be less than 1.0.")
-
-    stats = split_dataset(
-        raw_dir=args.raw_dir,
-        train_dir=train_dir,
-        val_dir=val_dir,
-        test_dir=test_dir,
-        train_ratio=args.train_ratio,
-        val_ratio=args.val_ratio,
-        seed=args.seed,
-    )
-
-    print("Dataset split complete.")
-    print(f"Raw data   : {args.raw_dir.resolve()}")
-    print(f"Train data : {train_dir.resolve()}")
-    print(f"Val data   : {val_dir.resolve()}")
-    print(f"Test data  : {test_dir.resolve()}")
-    print(f"Image counts -> train: {stats['train']}, val: {stats['val']}, test: {stats['test']}")
+    print(f"\nDone!")
+    print(f"  Total training images:   {total_train}")
+    print(f"  Total validation images: {total_val}")
+    print(f"\nFolders created:")
+    print(f"  {train_dir}/")
+    print(f"  {val_dir}/")
+    print("\nDo NOT run this file again unless you want to redo the split.")
 
 
 if __name__ == "__main__":
-    main()
+    split_dataset()
