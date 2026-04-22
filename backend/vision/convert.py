@@ -1,17 +1,6 @@
 """
-convert.py
-----------
 Converts your trained PyTorch model (.pth) to ONNX format (.onnx)
 so it can run inside a web browser using ONNX Runtime Web.
-
-Run this after train.py or finetune.py whenever you want to update
-the browser model.
-
-Requires:
-    pip install torch torchvision timm onnx
-
-Usage:
-    python convert.py
 """
 
 import torch
@@ -20,11 +9,8 @@ import onnx
 import json
 import os
 
-# ─────────────────────────────────────────────
-# CONFIGURE THESE
-# ─────────────────────────────────────────────
-LOAD_PATH   = "solar_model_v1.pth"    # change to v2.pth after finetuning
-ONNX_PATH   = "model.onnx"           # output file (used by index.html)
+LOAD_PATH   = "../artifacts/vision/model/solar_model_v1.pth"    # change to v2.pth after finetuning
+ONNX_PATH   = "../artifacts/vision/model/model.onnx"           # output file (used by index.html)
 NUM_CLASSES = 6
 IMAGE_SIZE  = 224
 
@@ -83,6 +69,20 @@ def convert():
     onnx.checker.check_model(onnx_model)
     print("ONNX model verified — no errors found.")
 
+    # ── Quantize to FP16 for the Web ──
+    print("\nQuantizing model to FP16 to reduce web download size...")
+    try:
+        from onnxconverter_common import float16
+        onnx_fp16 = float16.convert_float_to_float16(onnx_model)
+        fp16_path = ONNX_PATH.replace(".onnx", "_fp16.onnx")
+        onnx.save(onnx_fp16, fp16_path)
+        print(f"Exported FP16 ONNX model to: {fp16_path}")
+        final_model_path = fp16_path
+    except ImportError:
+        print("\nWarning: Please install `onnxconverter-common` for FP16 quantization.")
+        print("Skipping FP16 quantization. Using base model.")
+        final_model_path = ONNX_PATH
+
     # ── Save class names to JSON (used by index.html) ──
     # This way your website always knows which class is which
     labels_path = "class_names.json"
@@ -91,33 +91,12 @@ def convert():
     print(f"Class names saved to: {labels_path}")
 
     # ── Print file info ──
-    size_mb = os.path.getsize(ONNX_PATH) / (1024 * 1024)
+    size_mb = os.path.getsize(final_model_path) / (1024 * 1024)
     print(f"\nModel size: {size_mb:.1f} MB")
     print(f"\nFiles ready for your website:")
-    print(f"  {ONNX_PATH}")
+    print(f"  {final_model_path}")
     print(f"  {labels_path}")
     print(f"\nCopy both files into your website folder alongside index.html.")
-
-    # ── Quick sanity check: run one prediction ──
-    print("\nRunning sanity check...")
-    import onnxruntime as ort
-    import numpy as np
-
-    session = ort.InferenceSession(ONNX_PATH)
-    dummy_np = dummy_input.numpy()
-    outputs  = session.run(["scores"], {"image": dummy_np})
-    scores   = outputs[0][0]
-
-    # Convert raw scores to probabilities using softmax
-    exp_scores = np.exp(scores - scores.max())
-    probs      = exp_scores / exp_scores.sum()
-
-    print("Output probabilities for dummy input:")
-    for name, prob in zip(CLASS_NAMES, probs):
-        print(f"  {name:25s}  {prob*100:.2f}%")
-
-    print("\nSanity check passed. Model is working correctly.")
-    print("\nDone! Next step: open index.html in your browser.")
 
 
 if __name__ == "__main__":
